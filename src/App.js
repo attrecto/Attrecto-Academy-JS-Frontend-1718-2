@@ -27,7 +27,7 @@ class App extends React.Component {
         return (
             <Router>
                 <div>
-                    <Navbar>
+                    <Navbar inverse>
                         <Navbar.Header>
                             <Navbar.Brand>
                                 <Link to="/">Badge</Link>
