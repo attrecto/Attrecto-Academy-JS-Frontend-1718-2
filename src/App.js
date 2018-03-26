@@ -11,18 +11,28 @@ import {
     BrowserRouter as Router,
     Route,
     Link,
+    Switch,
 } from 'react-router-dom';
 import {
     LinkContainer,
-    IndexLinkContainer
+    IndexLinkContainer,
 } from 'react-router-bootstrap';
 
 import Home from './components/Home';
 import Users from './components/Users';
 import Badges from './components/Badges';
 import Login from './components/Login';
+import NotFound from './components/NotFound';
 
 class App extends React.Component {
+    state = {
+        token: null,
+    };
+
+    saveToken = (token) => {
+        this.setState({token});
+    };
+
     render() {
         return (
             <Router>
@@ -33,6 +43,7 @@ class App extends React.Component {
                                 <Link to="/">Badge</Link>
                             </Navbar.Brand>
                         </Navbar.Header>
+                        {this.state.token &&
                         <Nav>
                             <IndexLinkContainer to="/">
                                 <NavItem eventKey={0}>Home</NavItem>
@@ -44,23 +55,39 @@ class App extends React.Component {
                                 <NavItem eventKey={2}>Badges</NavItem>
                             </LinkContainer>
                         </Nav>
+                        }
                         <Nav pullRight>
+                            {!this.state.token &&
                             <LinkContainer to="/login">
                                 <NavItem eventKey={3}>Login</NavItem>
                             </LinkContainer>
+                            }
+                            {this.state.token &&
                             <LinkContainer to="/logout">
                                 <NavItem eventKey={4}>Logout</NavItem>
                             </LinkContainer>
+                            }
                         </Nav>
                     </Navbar>
 
                     <Grid>
                         <Row>
                             <Col xs={12}>
-                                <Route exact path="/" component={Home}/>
-                                <Route path="/users" component={Users}/>
-                                <Route path="/badges" component={Badges}/>
-                                <Route path="/login" component={Login}/>
+                                <Switch>
+                                    <Route exact path="/" component={Home}/>
+                                    {this.state.token && <Route path="/users" component={Users}/>}
+                                    {this.state.token && <Route path="/badges" component={Badges}/>}
+                                    {!this.state.token &&
+                                    <Route
+                                        path="/login"
+                                        render={(props) =>
+                                            <Login
+                                                saveToken={this.saveToken} {...props}/>
+                                        }
+                                    />
+                                    }
+                                    <Route path="/" component={NotFound}/>
+                                </Switch>
                             </Col>
                         </Row>
                     </Grid>

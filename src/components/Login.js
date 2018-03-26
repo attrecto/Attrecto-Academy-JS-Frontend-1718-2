@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import {
     FormGroup,
     ControlLabel,
@@ -22,6 +23,8 @@ class Login extends React.Component {
     state = {
         email: '',
         password: '',
+        validation: null,
+        redirect: null,
     };
 
     onInputChange = (e) => {
@@ -32,21 +35,26 @@ class Login extends React.Component {
 
     onFormSubmit = (e) => {
         e.preventDefault();
+        this.setState({validation: true});
         if (this.validationState('email') === 'success' && this.validationState('password') === 'success') {
-            console.log('ws call');
+            console.log('api call');
+            const token = '123';
+            this.props.saveToken(token);
+            this.setState({redirect: '/'});
         } else {
-            console.log('nothing');
+            console.log('nothing to do');
         }
     };
 
     validationState = (field) => {
-        if (this.state[field].length === 0) return null;
+        if (this.state[field].length === 0) return 'error';
         return 'success';
     };
 
     render() {
         return (
             <div>
+                {this.state.redirect && <Redirect to={this.state.redirect}/>}
                 <h1>Login</h1>
                 <Grid>
                     <Row>
@@ -56,14 +64,14 @@ class Login extends React.Component {
                                 <FieldGroup id="email"
                                             type="text"
                                             label="E-mail cím"
-                                            validationState={this.validationState('email')}
+                                            validationState={this.state.validation && this.validationState('email')}
                                             value={this.state.email}
                                             placeholder="valami@domain.com"
                                             help="Ide lehet írni egy kis segítséget"/>
                                 <FieldGroup id="password"
                                             type="password"
                                             label="Jelszó"
-                                            validationState={this.validationState('password')}
+                                            validationState={this.state.validation && this.validationState('password')}
                                             value={this.state.password}
                                             help="Ide is lehet írni egy kis segítséget"/>
                                 <Button type="submit"
