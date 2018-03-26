@@ -22,15 +22,22 @@ import Home from './components/Home';
 import Users from './components/Users';
 import Badges from './components/Badges';
 import Login from './components/Login';
+import Logout from './components/Logout';
 import NotFound from './components/NotFound';
 
 class App extends React.Component {
     state = {
-        token: null,
+        token: localStorage.getItem('token'),
     };
 
     saveToken = (token) => {
+        localStorage.setItem('token', token);
         this.setState({token});
+    };
+
+    removeToken = () => {
+        localStorage.removeItem('token');
+        this.setState({token: null});
     };
 
     render() {
@@ -77,15 +84,14 @@ class App extends React.Component {
                                     <Route exact path="/" component={Home}/>
                                     {this.state.token && <Route path="/users" component={Users}/>}
                                     {this.state.token && <Route path="/badges" component={Badges}/>}
-                                    {!this.state.token &&
+                                    <Route
+                                        path="/logout"
+                                        render={() => <Logout removeToken={this.removeToken}/>}
+                                    />
                                     <Route
                                         path="/login"
-                                        render={(props) =>
-                                            <Login
-                                                saveToken={this.saveToken} {...props}/>
-                                        }
+                                        render={() => <Login saveToken={this.saveToken}/>}
                                     />
-                                    }
                                     <Route path="/" component={NotFound}/>
                                 </Switch>
                             </Col>
