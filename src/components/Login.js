@@ -32,7 +32,6 @@ class Login extends React.Component {
     onInputChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value,
-            errorMessage: null,
         });
     };
 
@@ -70,7 +69,6 @@ class Login extends React.Component {
     };
 
     validationState = (field) => {
-        if (this.state.errorMessage) return null;
         if (this.state[field].length === 0) return 'error';
         return 'success';
     };
