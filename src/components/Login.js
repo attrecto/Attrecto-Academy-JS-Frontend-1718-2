@@ -9,7 +9,9 @@ import {
     Row,
     Col,
     Button,
+    Alert,
 } from 'react-bootstrap';
+import {request} from "../common";
 
 const FieldGroup = ({id, label, help, validationState, ...props}) =>
     <FormGroup controlId={id} validationState={validationState}>
@@ -24,6 +26,7 @@ class Login extends React.Component {
         email: '',
         password: '',
         validation: null,
+        errorMessage: null,
         redirect: null,
     };
 
@@ -33,20 +36,45 @@ class Login extends React.Component {
         });
     };
 
-    onFormSubmit = (e) => {
+    onFormSubmit = async (e) => {
         e.preventDefault();
-        this.setState({validation: true});
-        if (this.validationState('email') === 'success' && this.validationState('password') === 'success') {
-            console.log('api call');
-            const token = '123';
-            this.props.saveToken(token);
-            this.setState({redirect: '/'});
+        let errorMessage = null;
+        let redirect = false;
+        if (
+            (this.validationState('email') === 'success' || this.validationState('email') === null) &&
+            (this.validationState('password') === 'success' || this.validationState('password') === null)
+        ) {
+            let result = false;
+            try {
+                result = await request('/api/login', 'post', {
+                    email: this.state.email,
+                    password: this.state.password
+                });
+            } catch (error) {
+                result = error;
+            }
+
+            console.log(result);
+
+            if (result.status === 200 && result.data.token) {
+                this.props.saveToken(result.data.token);
+                redirect = '/';
+            } else {
+                errorMessage = result.error;
+            }
+
         } else {
             console.log('nothing to do');
         }
+        this.setState({
+            validation: true,
+            errorMessage,
+            redirect,
+        });
     };
 
     validationState = (field) => {
+        if (this.state.errorMessage) return null;
         if (this.state[field].length === 0) return 'error';
         return 'success';
     };
@@ -59,6 +87,7 @@ class Login extends React.Component {
                 <Grid>
                     <Row>
                         <Col md={6} mdOffset={3}>
+                            {this.state.errorMessage && <Alert bsStyle="danger">{this.state.errorMessage}</Alert>}
                             <form onChange={this.onInputChange}
                                   onSubmit={this.onFormSubmit}>
                                 <FieldGroup id="email"
@@ -67,13 +96,13 @@ class Login extends React.Component {
                                             validationState={this.state.validation && this.validationState('email')}
                                             value={this.state.email}
                                             placeholder="valami@domain.com"
-                                            help="Ide lehet írni egy kis segítséget"/>
+                                            help=""/>
                                 <FieldGroup id="password"
                                             type="password"
                                             label="Jelszó"
                                             validationState={this.state.validation && this.validationState('password')}
                                             value={this.state.password}
-                                            help="Ide is lehet írni egy kis segítséget"/>
+                                            help=""/>
                                 <Button type="submit"
                                         block={true}
                                         bsStyle={'primary'}

@@ -50,19 +50,18 @@ class App extends React.Component {
                                 <Link to="/">Badge</Link>
                             </Navbar.Brand>
                         </Navbar.Header>
-                        {this.state.token &&
+
                         <Nav>
                             <IndexLinkContainer to="/">
                                 <NavItem eventKey={0}>Home</NavItem>
                             </IndexLinkContainer>
-                            <LinkContainer to="/users">
+                            {this.state.token && <LinkContainer to="/users">
                                 <NavItem eventKey={1}>Users</NavItem>
-                            </LinkContainer>
-                            <LinkContainer to="/badges">
+                            </LinkContainer>}
+                            {this.state.token && <LinkContainer to="/badges">
                                 <NavItem eventKey={2}>Badges</NavItem>
-                            </LinkContainer>
+                            </LinkContainer>}
                         </Nav>
-                        }
                         <Nav pullRight>
                             {!this.state.token &&
                             <LinkContainer to="/login">
