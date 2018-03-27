@@ -10,11 +10,11 @@ import {
 import {request} from "../common";
 import {FieldGroup} from "./FieldGroup";
 
-class Login extends React.Component {
+class Register extends React.Component {
     state = {
         email: '',
         password: '',
-        validation: null,
+        name: '',
         errorMessage: null,
     };
 
@@ -27,12 +27,17 @@ class Login extends React.Component {
     onFormSubmit = async (e) => {
         e.preventDefault();
 
-        if (this.validationState('email') === 'success' && this.validationState('password') === 'success') {
+        if (
+            this.validationState('email') === 'success' &&
+            this.validationState('password') === 'success' &&
+            this.validationState('name') === 'success'
+        ) {
             let result = false;
             try {
-                result = await request('/api/login', 'post', {
+                result = await request('/api/user', 'post', {
                     email: this.state.email,
-                    password: this.state.password
+                    password: this.state.password,
+                    name: this.state.name,
                 });
             } catch (error) {
                 result = error;
@@ -40,8 +45,7 @@ class Login extends React.Component {
 
             console.log(result);
 
-            if (result.status === 200 && result.data.token) {
-                this.props.saveToken(result.data.token);
+            if (result.status === 200) {
                 this.props.history.push('/users');
             } else {
                 this.setState({
@@ -62,30 +66,34 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-                <h1>Login</h1>
+                <h1>Register</h1>
                 <Grid>
                     <Row>
                         <Col md={6} mdOffset={3}>
-                            {this.state.errorMessage && <Alert bsStyle="danger">{this.state.errorMessage}</Alert>}
+                            {this.state.errorMessage && <Alert
+                                bsStyle="danger">{this.state.errorMessage}</Alert>}
                             <form onChange={this.onInputChange}
                                   onSubmit={this.onFormSubmit}>
+                                <FieldGroup id="name"
+                                            type="text"
+                                            label="Name"
+                                            validationState={this.state.validation && this.validationState('name')}
+                                            value={this.state.name}/>
                                 <FieldGroup id="email"
                                             type="text"
-                                            label="E-mail cím"
+                                            label="E-mail address"
                                             validationState={this.state.validation && this.validationState('email')}
                                             value={this.state.email}
-                                            placeholder="valami@domain.com"
-                                            help=""/>
+                                            placeholder="valami@domain.com"/>
                                 <FieldGroup id="password"
                                             type="password"
-                                            label="Jelszó"
+                                            label="Password"
                                             validationState={this.state.validation && this.validationState('password')}
-                                            value={this.state.password}
-                                            help=""/>
+                                            value={this.state.password}/>
                                 <Button type="submit"
                                         block={true}
                                         bsStyle={'primary'}
-                                        bsSize={'large'}>Belépés</Button>
+                                        bsSize={'large'}>Register</Button>
                             </form>
                         </Col>
                     </Row>
@@ -95,4 +103,4 @@ class Login extends React.Component {
     }
 }
 
-export default withRouter(Login);
+export default withRouter(Register);

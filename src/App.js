@@ -23,6 +23,7 @@ import Badges from './components/Badges';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import NotFound from './components/NotFound';
+import Register from './components/Register';
 
 class App extends React.Component {
     state = {
@@ -58,11 +59,14 @@ class App extends React.Component {
                                 <NavItem eventKey={2}>Badges</NavItem>
                             </LinkContainer>
                         </Nav>}
-                        {this.state.token && <Nav pullRight>
-                            <LinkContainer to="/logout">
+                        <Nav pullRight>
+                            {!this.state.token && <LinkContainer to="/register">
+                                <NavItem eventKey={4}>Register</NavItem>
+                            </LinkContainer>}
+                            {this.state.token && <LinkContainer to="/logout">
                                 <NavItem eventKey={4}>Logout</NavItem>
-                            </LinkContainer>
-                        </Nav>}
+                            </LinkContainer>}
+                        </Nav>
                     </Navbar>
 
                     <Grid>
@@ -76,6 +80,7 @@ class App extends React.Component {
                                         path="/logout"
                                         render={() => <Logout removeToken={this.removeToken}/>}
                                     />}
+                                    {!this.state.token && <Route path="/register" component={Register}/>}
                                     {!this.state.token && <Route
                                         path="/"
                                         render={() => <Login saveToken={this.saveToken}/>}
