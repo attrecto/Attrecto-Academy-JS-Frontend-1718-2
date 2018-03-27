@@ -1,16 +1,17 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 
 class Logout extends React.Component {
     componentDidMount() {
         this.props.removeToken();
+        this.props.history.push('/');
     }
 
     render() {
         return (
-            <Redirect to={'/'}/>
+            <div/>
         );
     }
 }
 
-export default Logout;
+export default withRouter(Logout);

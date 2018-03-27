@@ -1,5 +1,5 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import {
     FormGroup,
     ControlLabel,
@@ -27,19 +27,18 @@ class Login extends React.Component {
         password: '',
         validation: null,
         errorMessage: null,
-        redirect: null,
     };
 
     onInputChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value,
+            errorMessage: null,
         });
     };
 
     onFormSubmit = async (e) => {
         e.preventDefault();
-        let errorMessage = null;
-        let redirect = false;
+
         if (
             (this.validationState('email') === 'success' || this.validationState('email') === null) &&
             (this.validationState('password') === 'success' || this.validationState('password') === null)
@@ -58,19 +57,16 @@ class Login extends React.Component {
 
             if (result.status === 200 && result.data.token) {
                 this.props.saveToken(result.data.token);
-                redirect = '/';
+                this.props.history.push('/users');
             } else {
-                errorMessage = result.error;
+                this.setState({
+                    validation: true,
+                    errorMessage: result.error,
+                });
             }
-
         } else {
-            console.log('nothing to do');
+            this.setState({validation: true});
         }
-        this.setState({
-            validation: true,
-            errorMessage,
-            redirect,
-        });
     };
 
     validationState = (field) => {
@@ -82,7 +78,6 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-                {this.state.redirect && <Redirect to={this.state.redirect}/>}
                 <h1>Login</h1>
                 <Grid>
                     <Row>
@@ -116,4 +111,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+export default withRouter(Login);

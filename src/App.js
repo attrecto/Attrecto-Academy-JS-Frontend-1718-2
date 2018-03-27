@@ -12,13 +12,12 @@ import {
     Route,
     Link,
     Switch,
+    Redirect,
 } from 'react-router-dom';
 import {
     LinkContainer,
-    IndexLinkContainer,
 } from 'react-router-bootstrap';
 
-import Home from './components/Home';
 import Users from './components/Users';
 import Badges from './components/Badges';
 import Login from './components/Login';
@@ -51,46 +50,36 @@ class App extends React.Component {
                             </Navbar.Brand>
                         </Navbar.Header>
 
-                        <Nav>
-                            <IndexLinkContainer to="/">
-                                <NavItem eventKey={0}>Home</NavItem>
-                            </IndexLinkContainer>
-                            {this.state.token && <LinkContainer to="/users">
+                        {this.state.token && <Nav>
+                            <LinkContainer to="/users">
                                 <NavItem eventKey={1}>Users</NavItem>
-                            </LinkContainer>}
-                            {this.state.token && <LinkContainer to="/badges">
-                                <NavItem eventKey={2}>Badges</NavItem>
-                            </LinkContainer>}
-                        </Nav>
-                        <Nav pullRight>
-                            {!this.state.token &&
-                            <LinkContainer to="/login">
-                                <NavItem eventKey={3}>Login</NavItem>
                             </LinkContainer>
-                            }
-                            {this.state.token &&
+                            <LinkContainer to="/badges">
+                                <NavItem eventKey={2}>Badges</NavItem>
+                            </LinkContainer>
+                        </Nav>}
+                        {this.state.token && <Nav pullRight>
                             <LinkContainer to="/logout">
                                 <NavItem eventKey={4}>Logout</NavItem>
                             </LinkContainer>
-                            }
-                        </Nav>
+                        </Nav>}
                     </Navbar>
 
                     <Grid>
                         <Row>
                             <Col xs={12}>
                                 <Switch>
-                                    <Route exact path="/" component={Home}/>
+                                    {this.state.token && <Redirect exact from={'/'} to={'/users'}/>}
                                     {this.state.token && <Route path="/users" component={Users}/>}
                                     {this.state.token && <Route path="/badges" component={Badges}/>}
-                                    <Route
+                                    {this.state.token && <Route
                                         path="/logout"
                                         render={() => <Logout removeToken={this.removeToken}/>}
-                                    />
-                                    <Route
-                                        path="/login"
+                                    />}
+                                    {!this.state.token && <Route
+                                        path="/"
                                         render={() => <Login saveToken={this.saveToken}/>}
-                                    />
+                                    />}
                                     <Route path="/" component={NotFound}/>
                                 </Switch>
                             </Col>
