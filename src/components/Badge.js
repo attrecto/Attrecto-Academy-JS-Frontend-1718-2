@@ -6,6 +6,7 @@ import {
     Col,
     Button,
     Alert,
+    Modal,
 } from 'react-bootstrap';
 import {request} from "../common";
 import {FieldGroup} from "./FieldGroup";
@@ -16,6 +17,7 @@ class Badge extends React.Component {
         name: '',
         description: '',
         errorMessage: null,
+        showDeleteModal: false,
     };
 
     componentDidMount() {
@@ -80,9 +82,44 @@ class Badge extends React.Component {
         return 'success';
     };
 
+    showDeleteModal = () => {
+        this.setState({showDeleteModal: true});
+    };
+
+    hideDeleteModal = () => {
+        this.setState({showDeleteModal: false});
+    };
+
+    deleteBadge = async () => {
+        // this.setState({showDeleteModal: false});
+        try {
+            await request('/api/badge/' + this.state.id, 'delete');
+            this.props.history.push('/badges');
+        } catch (error) {
+            console.error(error);
+            this.setState({errorMessage: error.error});
+        }
+    };
+
     render() {
         return (
             <div>
+                {this.state.id && <Modal show={this.state.showDeleteModal} onHide={this.hideDeleteModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete badge</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to delete the badge?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.deleteBadge} bsStyle={'danger'}>Yes</Button>
+                        <Button onClick={this.hideDeleteModal}bsStyle={'primary'}>No</Button>
+                    </Modal.Footer>
+                </Modal>}
+
+                {this.state.id && <Button onClick={this.showDeleteModal}
+                        style={{float: "right"}}
+                        bsStyle={'danger'}>Delete badge</Button>}
                 <h1>Edit badge</h1>
                 <Grid>
                     <Row>

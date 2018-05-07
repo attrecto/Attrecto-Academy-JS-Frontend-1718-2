@@ -21,7 +21,11 @@ export const request = async (url, method, payload = null) => {
         });
     }
 
-    const json = await response.json();
+    let json = {};
+    try {
+        json = await response.json();
+    } catch (error) {
+    }
 
     if (!response.ok) {
         return Promise.reject({
