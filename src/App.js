@@ -20,6 +20,7 @@ import {
 
 import Users from './components/Users';
 import Badges from './components/Badges';
+import Badge from './components/Badge';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import NotFound from './components/NotFound';
@@ -75,7 +76,8 @@ class App extends React.Component {
                                 <Switch>
                                     {this.state.token && <Redirect exact from={'/'} to={'/users'}/>}
                                     {this.state.token && <Route path="/users" component={Users}/>}
-                                    {this.state.token && <Route path="/badges" component={Badges}/>}
+                                    {this.state.token && <Route exact path="/badges" component={Badges}/>}
+                                    {this.state.token && <Route path="/badges/edit/:id?" component={Badge}/>}
                                     {this.state.token && <Route
                                         path="/logout"
                                         render={() => <Logout removeToken={this.removeToken}/>}
