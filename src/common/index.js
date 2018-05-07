@@ -1,12 +1,18 @@
-export const request = async (url, method, payload = {}) => {
-    const response = await fetch(url, {
+export const request = async (url, method, payload = null) => {
+    const options = {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         method: method,
-        body: JSON.stringify(payload)
-    });
+    };
+
+    if (payload) options.body = JSON.stringify(payload);
+
+    const token = localStorage.getItem('token');
+    if (token) options.headers.Authorization = 'Bearer ' + token;
+
+    const response = await fetch(url, options);
 
     if (response.status >= 500) {
         return Promise.reject({
