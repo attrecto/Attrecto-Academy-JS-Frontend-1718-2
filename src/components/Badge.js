@@ -35,7 +35,7 @@ class Badge extends React.Component {
                 description: result.data.description,
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 

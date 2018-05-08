@@ -16,7 +16,7 @@ class Badges extends React.Component {
             const result = await request('/api/badge', 'get');
             this.setState({badges: result.data});
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
