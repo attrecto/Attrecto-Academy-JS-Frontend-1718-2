@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table} from 'react-bootstrap';
+import {Table, Button, Modal} from 'react-bootstrap';
 import {request} from "../common";
 
 class Users extends React.Component {
@@ -30,6 +30,7 @@ class Users extends React.Component {
                         <th>#</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Badges</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -37,6 +38,15 @@ class Users extends React.Component {
                         <td>{user.id}</td>
                         <td><a href={`/users/${user.id}`}>{user.name}</a></td>
                         <td>{user.email}</td>
+                        <td>
+                            {user.badges.map(badge =>
+                                <div key={`user_${user.id}_badge_${badge.id}`} style={{marginBottom: '5px'}}>
+                                    <Button bsStyle="danger" bsSize="xsmall" style={{float: 'right'}} onClick={this.showDeleteModal(user.id, badge.id)}>X</Button>
+                                    <div>{badge.name}</div>
+                                </div>
+                            )}
+                            <Button bsSize="xsmall" block>Add badge</Button>
+                        </td>
                     </tr>)}
                     </tbody>
                 </Table>

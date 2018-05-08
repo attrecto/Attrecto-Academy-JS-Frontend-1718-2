@@ -38,8 +38,6 @@ class Login extends React.Component {
                 result = error;
             }
 
-            console.log(result);
-
             if (result.status === 200 && result.data.token) {
                 this.props.saveToken(result.data.token);
                 this.props.history.push('/users');

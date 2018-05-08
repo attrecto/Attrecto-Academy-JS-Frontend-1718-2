@@ -34,7 +34,6 @@ class Badge extends React.Component {
                 name: result.data.name,
                 description: result.data.description,
             });
-            console.log(result);
         } catch (error) {
             console.log(error);
         }
@@ -113,7 +112,7 @@ class Badge extends React.Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.deleteBadge} bsStyle={'danger'}>Yes</Button>
-                        <Button onClick={this.hideDeleteModal}bsStyle={'primary'}>No</Button>
+                        <Button onClick={this.hideDeleteModal} bsStyle={'primary'}>No</Button>
                     </Modal.Footer>
                 </Modal>}
 

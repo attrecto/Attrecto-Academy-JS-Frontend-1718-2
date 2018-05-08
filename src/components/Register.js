@@ -43,8 +43,6 @@ class Register extends React.Component {
                 result = error;
             }
 
-            console.log(result);
-
             if (result.status === 200) {
                 this.props.history.push('/users');
             } else {
